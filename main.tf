@@ -1,7 +1,7 @@
 # configured aws provider with proper credentials
 provider "aws" {
-  region    = "us-west-2"
-  profile   = "terraform-user"
+  region    = "us-east-1"
+  profile   = "default"
 }
 
 
@@ -34,8 +34,6 @@ resource "aws_security_group" "ec2_security_group" {
   description = "allow access on ports 80 and 22"
   vpc_id      = aws_default_vpc.default_vpc.id
 
-  # NEEDSWORK: Create security group rules
-
   tags   = {
     Name = "ec2 security group"
   }
@@ -43,8 +41,6 @@ resource "aws_security_group" "ec2_security_group" {
 
 
 # use data source to get a registered amazon linux 2 ami
-
-# NEEDSWORK: Look into documentation for Cali Linux server
 data "aws_ami" "amazon_linux_2" {
   most_recent = true
   owners      = ["amazon"]
@@ -68,7 +64,7 @@ resource "aws_instance" "ec2_instance" {
   subnet_id              = aws_default_subnet.default_az1.id
   vpc_security_group_ids = [aws_security_group.ec2_security_group.id]
   key_name               = "ec2secure"
-  user_data              = file("install_resources.sh") # NEEDSWORK: Create file to install chosen security resources
+  user_data              = file("install_resources.sh")
 
   tags = {
     Name = "secure ec2"
